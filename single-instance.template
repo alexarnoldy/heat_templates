@@ -1,0 +1,70 @@
+heat_template_version: 2015-04-30
+
+description: Simple template to deploy a single compute instance
+
+parameters:
+  key_name:
+    type: string
+#    description: SSH key pair
+    default: NewDomain-KP
+
+  my_flavor:
+    type: string
+#    label: Instance Type
+#    description: Instance type for compute instances
+#    constraints:
+#      - allowed_values:
+#        - m1.small
+#        - m1.smaller
+#        - m1.medium
+#        - m1.large
+    default: m1.smaller
+
+resources:
+  my_instance:
+    type: OS::Nova::Server
+    properties:
+      key_name: { get_param: key_name }
+      image: cirros
+      flavor: { get_param: my_flavor }
+      networks:
+        - network: network-01
+
+  my_volume:
+    type: OS::Cinder::Volume
+    properties:
+#      name: my_volume
+      size: 1
+
+  my_volume_attachment:
+    type: OS::Cinder::VolumeAttachment
+    properties:
+      instance_uuid:  { get_resource: my_instance }
+      volume_id: { get_resource: my_volume }
+
+  my_floating_ip:
+    type: OS::Neutron::FloatingIP
+    properties:
+      floating_network: floating
+
+  my_network_port:
+    type: OS::Neutron::Port
+    properties:
+      network: network-01
+
+  floating_associate:
+    type: OS::Neutron::FloatingIPAssociation
+    properties:
+      floatingip_id: { get_resource: my_floating_ip }
+      port_id: { get_resource: my_network_port }
+
+#  my_network:
+#    type: OS::Neutron::Net
+#    properties:
+
+#
+#  my_network_port:
+#    type: OS::Neutron::Subnet
+#    properties:
+#      network_id: { get_resource: my_network }
+#      cidr: 10.10.10.0/24

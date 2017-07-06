@@ -1,0 +1,14 @@
+heat_template_version: 2015-04-30
+
+resources:
+#################################################
+
+  my_instance:
+    type: OS::Nova::Server
+    properties:
+      image: cirros
+      flavor: m1.tiny
+      networks:
+        - network: network-01
+
+#################################################

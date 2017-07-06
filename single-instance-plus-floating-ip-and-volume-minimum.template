@@ -1,0 +1,45 @@
+heat_template_version: 2015-04-30
+
+resources:
+#################################################
+
+  my_instance:
+    type: OS::Nova::Server
+    properties:
+      image: cirros
+      flavor: m1.tiny
+      networks:
+        - port: { get_resource: my_network_port }
+
+#################################################
+
+  my_floating_ip:
+    type: OS::Neutron::FloatingIP
+    properties:
+      floating_network: floating
+
+  my_network_port:
+    type: OS::Neutron::Port
+    properties:
+      network: network-01
+
+  floating_associate:
+    type: OS::Neutron::FloatingIPAssociation
+    properties:
+      floatingip_id: { get_resource: my_floating_ip }
+      port_id: { get_resource: my_network_port }
+
+#################################################
+
+  my_volume:
+    type: OS::Cinder::Volume
+    properties:
+      size: 1
+
+  my_volume_attachment:
+    type: OS::Cinder::VolumeAttachment
+    properties:
+      instance_uuid:  { get_resource: my_instance }
+      volume_id: { get_resource: my_volume }
+
+#################################################

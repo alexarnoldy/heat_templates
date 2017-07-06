@@ -1,0 +1,8 @@
+parameters:
+  key_name: bigswitch-kp
+  image: TestVM
+  flavor: m1.small
+  public_net_id: 2568f79b-0cad-4839-b392-39f972c4c2e8
+  private_net_id: 6d1840b9-22d5-4b71-ac1d-f03764df9f3d
+  private_subnet_id: b7683b15-9cac-44cf-9549-dc141efe05e7
+

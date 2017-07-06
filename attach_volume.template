@@ -1,0 +1,16 @@
+heat_template_version: 2015-04-30
+
+description: Simple template to deploy a single compute instance
+
+resources:
+  my_volume:
+    type: OS::Cinder::Volume
+    properties:
+      name: my_volume
+      size: 1
+
+  my_volume_attachment:
+    type: OS::Cinder::VolumeAttachment
+    properties:
+      instance_uuid:  { get_resource: my_instance }
+      volume_id: { get_resource: my_volume }
